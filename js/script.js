@@ -217,6 +217,7 @@ function pintar() {
   let metros = null;
   let metodo = '';
 
+  $('viaje').classList.toggle('modo-destino', hayDestino(v));
   if (hayDestino(v)) {
     // La línea entre ambos no aplica cuando van a un mismo lugar.
     v.linea?.remove();
@@ -356,6 +357,8 @@ function mostrarViaje(esDemo, planEnDemo = false) {
   $('compartir').disabled = esDemo;
   $('abrir-plan').disabled = esDemo && !planEnDemo;
   $('viaje').dataset.ritmo = '';
+  $('viaje').classList.toggle('modo-destino', false);
+  $('velocimetro').hidden = true;
   $('consejo').hidden = true;
   $('llegadas').hidden = true;
   viaje.mapa = crearMapa();

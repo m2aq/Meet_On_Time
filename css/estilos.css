@@ -163,8 +163,16 @@ body {
 .llegadas { font-size: .85rem; line-height: 1.45; margin-top: 6px; font-variant-numeric: tabular-nums; }
 .meta-hora { display: block; width: 100%; min-height: 40px; margin-bottom: 4px; padding: 4px 10px; font: inherit; font-size: .95rem; font-weight: 600; text-align: left; color: var(--letrero-texto); background: transparent; border: 1px dashed var(--letrero-suave); border-radius: 10px; cursor: pointer; touch-action: manipulation; }
 .marca-destino { width: 22px; height: 22px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: #ef4444; border: 3px solid #fff; box-shadow: 0 0 0 2px #0006; }
-#consejo-estado { display: block; font-size: 1.2rem; }
-#consejo-estado:empty { display: none; }
+/* En punto de reunión manda la velocidad, no los minutos */
+.modo-destino .panel-principal, .modo-destino .panel-datos { display: none; }
+.viaje:not(.modo-destino) .velocimetro { display: none; }
+.velocimetro { text-align: center; }
+.accion { display: inline-block; margin-top: 4px; padding: 2px 16px; border-radius: 999px; font-size: clamp(1.35rem, 7vw, 1.8rem); font-weight: 700; line-height: 1.35; }
+.viaje[data-ritmo]:not([data-ritmo=""]) .accion { background: var(--ritmo); color: var(--sobre-ritmo); border: 2px solid #fff; }
+.cifra { color: var(--letrero-numero); font-size: clamp(4rem, 24vw, 6rem); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.cifra-unidad { font-size: .95rem; font-weight: 600; }
+.promedio { color: var(--letrero-suave); font-size: .85rem; margin: 2px 0 6px; }
+@media (max-height: 700px) { .cifra { font-size: 3.5rem; } .accion { font-size: 1.2rem; } }
 
 /* Resplandor según el ritmo: intenso en la orilla y se desvanece al centro */
 .viaje { position: relative; }

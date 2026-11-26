@@ -15,6 +15,7 @@ export const nuevoDestino = () => ({
   margen: 0,
   ruta: null, rutaId: 0, consultando: false, ultima: 0, falla: false,
   ritmo: calc.crearMedidor(600000),
+  avance: calc.crearMedidor(600000), // metros por segundo recorridos hacia el punto
   estable: calc.crearEstable(),
   mio: null, amigo: null, llegue: null,
   linea: null, marca: null,
@@ -41,6 +42,7 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
     d.mio = null;
     d.llegue = null;
     d.ritmo.reiniciar();
+    d.avance.reiniciar();
     d.estable = calc.crearEstable();
   }
 
@@ -125,7 +127,10 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
     }
     const resto = calc.restanteEnRuta(d.ruta, v.yo);
     if (resto.desvio > DESVIO) return; // se conserva lo último hasta tener ruta nueva
-    if (medir) d.ritmo.agregar(ahora, resto.segundos, d.rutaId);
+    if (medir) {
+      d.ritmo.agregar(ahora, resto.segundos, d.rutaId);
+      d.avance.agregar(ahora, resto.metros, d.rutaId);
+    }
     const ritmo = calc.ajustarRitmo(d.ritmo.velocidad(180000));
     d.mio = {
       rev: d.plan.rev,
@@ -175,6 +180,10 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
     let tiempo = { valor: '--', unidad: '' };
     let consejo = '';
     let estado = null; // consejo basado en el ritmo real: es el que lleva color
+    let medidor = null; // lo que va en grande
+    let promedio = d.avance.velocidad(180000);
+    // La demo avanza al ritmo de la ruta: se usa ese promedio desde el inicio.
+    if (promedio === null && v.esDemo && mio?.s) promedio = mio.m / mio.s;
 
     if (mio?.fin) {
       titulo = t('tLlegaste');
@@ -192,7 +201,9 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
           estado = d.estable(actual, ahora);
           actual = estado;
         }
-        consejo = fraseConsejo(actual);
+        medidor = calc.tablero({ consejo: actual, midiendo: !estado, promedio, imperial: imperial() });
+        // El texto solo acompaña cuando la cifra grande no basta.
+        if (actual.tipo === 'tarde' || actual.tipo === 'sobra') consejo = fraseConsejo(actual);
       }
     } else if (v.yo) {
       consejo = t(d.falla ? 'cSinRuta' : 'cCalculando');
@@ -201,8 +212,8 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
     if (!estado) d.estable(null, ahora);
     const color = estado ? calc.COLOR_RITMO[estado.tipo] : '';
     $('viaje').dataset.ritmo = color;
-    $('consejo-estado').textContent = color ? t(`estado_${color}`) : '';
     $('consejo-texto').textContent = consejo;
+    pintarTablero(medidor, promedio, color);
     $('consejo').hidden = !consejo;
     $('llegadas').hidden = false;
     // La hora siempre está a la vista y al tocarla se puede cambiar.
@@ -210,6 +221,13 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
       ? texto(plan.modo === 'hora' ? 'metaHora' : 'metaJuntos', { h: reloj(objetivo) })
       : t('ponerHora');
     $('llegada-yo').textContent = lineaPersona(t('tu'), mio, objetivo, false);
+    const metros = mio ? mio.m : v.yo ? calc.distancia(v.yo, plan.dest) : null;
+    const actualVelocidad = v.yo && ahora - v.yo.recibido <= 20000 ? v.yo.v ?? null : null;
+    $('resumen').textContent = [
+      metros === null ? '' : calc.formatoDistancia(metros, imperial()),
+      mio && !mio.fin ? `${tiempo.valor} ${tiempo.unidad}` : '',
+      `${t('ahora')} ${calc.formatoVelocidad(actualVelocidad, imperial())}`,
+    ].filter(Boolean).join(' · ');
     $('llegada-amigo').textContent = lineaPersona(t('otro'), amigo, objetivo, viejo);
 
     let metodo = '';
@@ -220,9 +238,29 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
     }
     return {
       titulo, tiempo, metodo,
-      metros: mio ? mio.m : v.yo ? calc.distancia(v.yo, plan.dest) : null,
+      metros,
       rumbo: v.yo ? calc.rumbo(v.yo, plan.dest) : 0,
     };
+  }
+
+  function pintarTablero(medidor, promedio, color) {
+    $('velocimetro').hidden = !medidor;
+    if (!medidor) return;
+    $('accion').textContent = texto(`a_${medidor.accion}`, { n: medidor.n });
+    const { cifra } = medidor;
+    let valor = '--';
+    let unidad = '';
+    if (cifra?.tipo === 'velocidad') {
+      valor = String(cifra.valor);
+      unidad = texto(color === 'amarillo' ? 'uLimite' : 'uPromedio', { u: imperial() ? 'mph' : 'km/h' });
+    } else if (cifra) {
+      valor = cifra.valor < 60 ? String(cifra.valor) : `${Math.floor(cifra.valor / 60)}:${String(cifra.valor % 60).padStart(2, '0')}`;
+      unidad = texto(cifra.tipo === 'tarde' ? 'uTarde' : 'uSobra', { u: cifra.valor < 60 ? 'min' : 'h' });
+    }
+    $('cifra').textContent = valor;
+    $('cifra-unidad').textContent = unidad;
+    $('promedio').textContent = promedio === null ? t('midiendoPromedio')
+      : texto('tuPromedio', { v: calc.formatoVelocidad(promedio, imperial()) });
   }
 
   /* ---------- Ventana para elegir el punto ---------- */

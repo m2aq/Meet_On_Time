@@ -243,6 +243,29 @@ export function crearEstable(espera = 10000) {
   };
 }
 
+// Qué se muestra en grande: la acción, cuánto cambiar y la cifra principal.
+//  promedio: tu velocidad promedio reciente en m/s (null si aún se mide).
+export function tablero({ consejo, midiendo, promedio, imperial }) {
+  const factor = imperial ? 2.236936 : 3.6;
+  const necesaria = consejo.velocidad ? Math.round(consejo.velocidad * factor) : null;
+  const velocidad = necesaria === null ? null : { tipo: 'velocidad', valor: necesaria };
+
+  if (consejo.tipo === 'tarde') return { accion: 'tarde', n: null, cifra: { tipo: 'tarde', valor: consejo.minutos } };
+  if (midiendo) return { accion: 'midiendo', n: null, cifra: velocidad };
+  if (consejo.tipo === 'sobra') return { accion: 'pausa', n: null, cifra: { tipo: 'sobra', valor: consejo.minutos } };
+  if (consejo.tipo === 'aTiempo') return { accion: 'mantener', n: null, cifra: velocidad };
+
+  const bajar = consejo.tipo === 'antes';
+  // Se restan las cifras ya redondeadas para que cuadren con lo que se ve.
+  const diferencia = necesaria === null || promedio === null ? null
+    : (Math.round(promedio * factor) - necesaria) * (bajar ? 1 : -1);
+  if (diferencia !== null && diferencia >= 1) {
+    return { accion: bajar ? 'bajar' : 'subir', n: diferencia, cifra: velocidad };
+  }
+  // Si el promedio no explica la diferencia (cambian los tramos), no se da un número.
+  return { accion: bajar ? 'adelantado' : 'atrasado', n: null, cifra: velocidad };
+}
+
 // Hora "HH:MM" del teléfono convertida a fecha: hoy, o mañana si ya pasó.
 export function horaAFecha(hhmm, ahora) {
   const partes = /^(\d{1,2}):(\d{2})/.exec(hhmm || '');

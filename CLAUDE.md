@@ -16,6 +16,7 @@ Web app para iPhone: dos personas comparten su ubicación y ven en cuánto tiemp
 - No se guarda historial de recorridos.
 - **Punto de reunión** (se conserva el modo de ir uno hacia el otro): ambos van a un lugar; llegada "juntos" o a hora fija; margen manual por persona para frontera o paradas.
 - **Resplandor de color** desde la orilla que se desvanece al centro (no borde sólido), con **3 pulsos suaves solo al cambiar de color** y luego fijo (sin pulso con movimiento reducido), en modo punto de reunión: verde a tiempo; rojo adelantado (no es exceso de velocidad); amarillo atrasado pero alcanzable; morado ya no alcanza. Siempre con icono y texto. Solo con ritmo reciente (la demo usa el de la ruta) y cambia si se mantiene 10 s.
+- **Panel de velocidad** (punto de reunión): arriba la acción y cuánto ("Baja 20" / "Sube 8" / "Mantén"), en grande el promedio necesario; la diferencia se calcula con el promedio reciente (~3 min), nunca con la velocidad del instante. Minutos, distancia, velocidad actual y la otra persona van en pequeño.
 - El consejo es un **promedio** para lo que falta. **Nunca pedir ir más rápido que el ritmo normal de la ruta** (si no alcanza, avisar que va tarde) ni ir demasiado lento (bajo 70 %, sugerir una parada).
 
 ## Estructura

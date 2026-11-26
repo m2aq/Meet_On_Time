@@ -71,10 +71,17 @@
         <span><small data-i18n="distancia"></small><b id="distancia">--</b></span>
         <span><small data-i18n="tuVelocidad"></small><b id="velocidad">--</b></span>
       </div>
-      <p id="consejo" class="consejo" hidden><strong id="consejo-estado"></strong><span id="consejo-texto"></span></p>
+      <div id="velocimetro" class="velocimetro" hidden>
+        <p id="accion" class="accion"></p>
+        <p id="cifra" class="cifra"></p>
+        <p id="cifra-unidad" class="cifra-unidad"></p>
+        <p id="promedio" class="promedio"></p>
+      </div>
+      <p id="consejo" class="consejo" hidden><span id="consejo-texto"></span></p>
       <div id="llegadas" class="llegadas" hidden>
         <button type="button" id="meta" class="meta-hora"></button>
         <p id="llegada-yo"></p>
+        <p id="resumen"></p>
         <p id="llegada-amigo"></p>
       </div>
       <p id="metodo" class="panel-metodo"></p>
