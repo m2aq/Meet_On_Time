@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-color="cian" data-modo="oscuro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="apple-mobile-web-app-title" content="Meet On Time">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Meet On Time</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <div id="intro" class="intro" role="button" tabindex="0" aria-label="Skip intro">
+    <svg class="intro-rutas" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path class="intro-calles" d="M0 160H400M0 400H400M0 640H400M80 0V800M200 0V800M320 0V800"/>
+      <path class="intro-ruta intro-ruta-a" pathLength="1" d="M80 800V640H200V400"/>
+      <path class="intro-ruta intro-ruta-b" pathLength="1" d="M320 0V160H200V400"/>
+      <circle class="intro-onda" cx="200" cy="400" r="20"/>
+      <circle class="intro-onda intro-onda-2" cx="200" cy="400" r="20"/>
+    </svg>
+    <div class="intro-sello">
+      <span class="intro-por">Developed by</span>
+      <span class="intro-marca"><i>m</i><i class="verde">2</i><i>a</i><i>q</i><b class="led"></b></span>
+    </div>
+    <footer class="sello">
+      <span>Developed by <strong>m<em>2</em>aq</strong> <b class="led"></b></span>
+      <span>© <span id="anio"></span></span>
+    </footer>
+  </div>
+
+  <main id="inicio" class="pantalla inicio">
+    <div class="barra-superior">
+      <button type="button" class="boton-chico" data-accion="ajustes" data-i18n="ajustes"></button>
+    </div>
+
+    <div class="letrero portada">
+      <h1>Meet On Time</h1>
+      <p data-i18n="lema"></p>
+    </div>
+
+    <p id="aviso-invitacion" class="nota" data-i18n="invitado" hidden></p>
+
+    <form id="form-unirse" class="bloque" novalidate>
+      <label for="codigo" data-i18n="codigo"></label>
+      <div class="fila">
+        <input id="codigo" maxlength="12" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="go">
+        <button type="submit" class="boton" data-i18n="unirse"></button>
+      </div>
+    </form>
+
+    <div class="bloque">
+      <button type="button" id="crear" class="boton boton-principal" data-i18n="crear"></button>
+      <button type="button" id="demo" class="boton" data-i18n="demo"></button>
+      <button type="button" id="demo-reunion" class="boton" data-i18n="demoReunion"></button>
+    </div>
+
+    <p id="error-inicio" class="error" role="alert"></p>
+    <p class="nota" data-i18n="privacidad"></p>
+  </main>
+
+  <main id="viaje" class="pantalla viaje" hidden>
+    <section class="letrero panel" aria-live="polite">
+      <p id="titulo" class="panel-titulo"></p>
+      <div class="panel-principal">
+        <p class="tiempo"><span id="tiempo">--</span> <small id="tiempo-unidad"></small></p>
+        <svg id="flecha" class="flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7 9h-4.5v11h-5V11H5z"/></svg>
+      </div>
+      <div class="panel-datos">
+        <span><small data-i18n="distancia"></small><b id="distancia">--</b></span>
+        <span><small data-i18n="tuVelocidad"></small><b id="velocidad">--</b></span>
+      </div>
+      <p id="consejo" class="consejo" hidden><strong id="consejo-estado"></strong><span id="consejo-texto"></span></p>
+      <div id="llegadas" class="llegadas" hidden>
+        <button type="button" id="meta" class="meta-hora"></button>
+        <p id="llegada-yo"></p>
+        <p id="llegada-amigo"></p>
+      </div>
+      <p id="metodo" class="panel-metodo"></p>
+    </section>
+
+    <div class="zona-mapa">
+      <div id="mapa"></div>
+      <p id="estado" class="estado" role="status" hidden></p>
+    </div>
+
+    <nav class="barra">
+      <button type="button" id="compartir" class="boton"></button>
+      <button type="button" id="abrir-plan" class="boton" data-i18n="plan"></button>
+      <button type="button" id="centrar" class="boton" data-i18n="centrar"></button>
+      <button type="button" class="boton" data-accion="ajustes" data-i18n="ajustes"></button>
+      <button type="button" id="salir" class="boton" data-i18n="salir"></button>
+    </nav>
+  </main>
+
+  <dialog id="plan" class="ajustes ventana-plan">
+    <h2 data-i18n="puntoReunion"></h2>
+    <div id="plan-donde" class="bloque">
+      <form id="plan-form" class="fila" novalidate>
+        <input id="plan-busqueda" class="busqueda" type="search" maxlength="120" autocomplete="off" enterkeyhint="search" data-i18n-ayuda="ayudaBuscar">
+        <button type="submit" class="boton" data-i18n="buscar"></button>
+      </form>
+      <ul id="plan-resultados" class="resultados"></ul>
+      <button type="button" id="plan-mapa" class="boton" data-i18n="marcarMapa"></button>
+    </div>
+    <p class="elegido"><span data-i18n="elegido"></span> <b id="plan-elegido"></b></p>
+    <p class="pregunta" data-i18n="aQueHora"></p>
+    <div class="eleccion">
+      <button type="button" id="plan-fija" class="boton" data-i18n="modoHora"></button>
+      <button type="button" id="plan-juntos" class="boton" data-i18n="modoJuntos"></button>
+    </div>
+    <div id="plan-hora-fila" class="opcion" hidden><label for="plan-hora" data-i18n="horaLlegada"></label><input id="plan-hora" class="campo-corto" type="time"></div>
+    <div class="opcion"><label for="plan-margen" data-i18n="miEspera"></label><input id="plan-margen" class="campo-corto" type="number" inputmode="numeric" min="0" max="600" placeholder="0"></div>
+    <p class="nota" data-i18n="notaEspera"></p>
+    <p id="plan-error" class="error" role="alert"></p>
+    <button type="button" id="plan-guardar" class="boton boton-principal" data-i18n="guardar"></button>
+    <button type="button" id="plan-cancelar" class="boton" data-i18n="cancelar"></button>
+    <button type="button" id="plan-quitar" class="boton" data-i18n="quitarPunto"></button>
+  </dialog>
+
+  <dialog id="ajustes" class="ajustes">
+    <h2 data-i18n="ajustes"></h2>
+    <div class="opcion"><span data-i18n="color"></span><button type="button" id="cambiar-color" class="boton"></button></div>
+    <div class="opcion"><span data-i18n="modo"></span><button type="button" id="cambiar-modo" class="boton"></button></div>
+    <div class="opcion"><span data-i18n="idioma"></span><button type="button" id="cambiar-idioma" class="boton"></button></div>
+    <form method="dialog"><button class="boton boton-principal" data-i18n="listo"></button></form>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.10.1/mqtt.min.js" integrity="sha512-pR8nd38GU+Btc396OiF2bVNDPxdLVgqA1K/roVBR13m4nVsFmjyIopjsVzncTgmczisiimSFLYpBK+dclsL7uw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="module" src="js/script.js"></script>
+</body>
+</html>
