@@ -14,6 +14,7 @@ Web app para iPhone: dos personas comparten su ubicación y ven en cuánto tiemp
 - Conexión: servidor MQTT público (EMQX), sin cuenta, con ubicaciones cifradas. **Sin Firebase** (decisión del usuario). Publicación: GitHub Pages.
 - Código de sala de 12 caracteres.
 - No se guarda historial de recorridos.
+- En el inicio hay dos formas de crear sala: "Ir uno hacia el otro" y "Reunirnos en un destino" (abre enseguida la ventana de lugar y hora).
 - **Punto de reunión** (se conserva el modo de ir uno hacia el otro): ambos van a un lugar; llegada "juntos" o a hora fija; margen manual por persona para frontera o paradas.
 - **Resplandor de color** desde la orilla que se desvanece al centro (no borde sólido), con **3 pulsos suaves solo al cambiar de color** y luego fijo (sin pulso con movimiento reducido), en modo punto de reunión: verde a tiempo; rojo adelantado (no es exceso de velocidad); amarillo atrasado pero alcanzable; morado ya no alcanza. Siempre con icono y texto. Solo con ritmo reciente (la demo usa el de la ruta) y cambia si se mantiene 10 s.
 - **Panel de velocidad** (punto de reunión): arriba la acción y cuánto ("Baja 20" / "Sube 8" / "Mantén"), en grande el promedio necesario; la diferencia se calcula con el promedio reciente (~3 min), nunca con la velocidad del instante. Minutos, distancia, velocidad actual y la otra persona van en pequeño.

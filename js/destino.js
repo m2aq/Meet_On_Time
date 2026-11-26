@@ -397,7 +397,7 @@ export function crearDestino({ viaje, t, idioma, imperial, consultarRuta, alCamb
   });
 
   return {
-    aplicarPlan, recibir, paraEnviar, revisarRuta, calcular, pintar, pintarBorrador, tocarMapa,
+    abrir, aplicarPlan, recibir, paraEnviar, revisarRuta, calcular, pintar, pintarBorrador, tocarMapa,
     eligiendo: () => eligiendo,
     cancelarEleccion: () => { eligiendo = false; },
   };

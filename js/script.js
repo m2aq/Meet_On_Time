@@ -548,6 +548,11 @@ async function compartir() {
 
 /* ---------- Eventos ---------- */
 $('crear').addEventListener('click', () => iniciarSala(codigoNuevo()));
+$('crear-destino').addEventListener('click', () => {
+  // La sala se crea y enseguida se pide el lugar y la hora.
+  iniciarSala(codigoNuevo());
+  destino.abrir();
+});
 $('demo').addEventListener('click', iniciarDemo);
 $('demo-reunion').addEventListener('click', iniciarDemoReunion);
 $('form-unirse').addEventListener('submit', (e) => {
